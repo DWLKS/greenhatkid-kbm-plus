@@ -80,6 +80,15 @@ The first script writes `native/LICENSES.txt`; the second writes `out/GreenHatKi
 
 ## Credits and license
 
-Parts of this software are based on lichii-keyboard-mouse by exgde/joaobyss (MIT): the key mapping, the key icon tools and art, the mouse capture and the native camera patch, which this project extends. This version adds the aiming and riding camera fix and runs the mouse capture itself.
+Parts of this software are based on lichii-keyboard-mouse by exgde/joaobyss (MIT): the key mapping, the key icon tools and art, the mouse capture and the native camera patch. This project remakes it in Rust and builds on it with:
+
+- **One program:** a single 5 MB exe replaces the settings tool and the separate mouse capture helper, with nothing to install.
+- **A new settings window:** dark and step by step (Controls, Camera, In-game key icons, then Apply). Check marks show what Lichii already has. You set a key by pressing it, keys used twice get a warning, and each page has its own Defaults.
+- **Tray:** closing the window keeps the app running in the tray, and it can start with Windows.
+- **Reworked mouse capture:** it only watches the mouse while the game is in front and handles every mouse report at once. It follows Lichii's aspect ratio, notices when the game stops, and puts Windows' pointer settings back even after a crash.
+- **The mouse camera while aiming and riding horses.**
+- **In-game key icons made inside the app** from your own game file, with the Basic Controls guide lines drawn for your keys.
+- **Automatic mouse panning.**
+- **Remove the mod**, which puts Lichii back as it was.
 
 MIT License, see [LICENSE](LICENSE). The original mod's copyright notice is kept with this software: [third_party/original/LICENSE](third_party/original/LICENSE) in the source, section 2 of `LICENSES.txt` in the release.

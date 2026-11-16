@@ -1094,7 +1094,7 @@ impl App {
         }
         card(ui, "About", None, |ui| {
             ui.label(format!("{APP} {VERSION}"));
-            ui.label("Based on lichii-keyboard-mouse by exgde/joaobyss (MIT): key mapping, icon tools and the native camera. This version adds the aiming and riding camera fix and runs the mouse capture itself.");
+            ui.label("Based on lichii-keyboard-mouse by exgde/joaobyss (MIT): key mapping, icon tools and the native camera. Remade in Rust as one program, with a new settings window, the tray, a reworked mouse capture, the camera while aiming and riding horses, and in-game key icons drawn for your keys.");
         });
     }
 
