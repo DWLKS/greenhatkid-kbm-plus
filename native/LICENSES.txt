@@ -30,11 +30,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Parts of this software are based on lichii-keyboard-mouse (MIT): the key mapping, the
-key-picture tools and art, the mouse capture and the native camera patch, which this
-project extends. Its copyright notice is kept with this software: third_party/original/LICENSE
-in the source, section 2 of LICENSES.txt in the release.
-
 ====================================================================================================
 2. The original mod: lichii-keyboard-mouse (its license notice, unchanged)
 ====================================================================================================

@@ -80,6 +80,6 @@ The first script writes `native/LICENSES.txt`; the second writes `out/GreenHatKi
 
 ## Credits and license
 
-Based on [lichii-keyboard-mouse](third_party/original/LICENSE) by exgde/joaobyss (MIT): key mapping, icon tools and the native camera. This version adds the aiming and riding camera fix and runs the mouse capture itself.
+Parts of this software are based on lichii-keyboard-mouse by exgde/joaobyss (MIT): the key mapping, the key icon tools and art, the mouse capture and the native camera patch, which this project extends. This version adds the aiming and riding camera fix and runs the mouse capture itself.
 
-MIT License, see [LICENSE](LICENSE). The original mod's license is in [third_party/original/LICENSE](third_party/original/LICENSE).
+MIT License, see [LICENSE](LICENSE). The original mod's copyright notice is kept with this software: [third_party/original/LICENSE](third_party/original/LICENSE) in the source, section 2 of `LICENSES.txt` in the release.
