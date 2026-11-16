@@ -1,0 +1,49 @@
+[package]
+name = "greenhatkid-kbm-plus"
+version = "2.1.6"
+edition = "2021"
+description = "Green Hat Kid Keyboard & Mouse Plus"
+license = "MIT"
+rust-version = "1.88"
+publish = false
+
+[[bin]]
+name = "GreenHatKid-KBM-Plus"
+path = "src/main.rs"
+
+[dependencies]
+ctt-astcenc = "0.6.1"
+egui = { version = "0.37", default-features = false }
+egui-winit = { version = "0.37", default-features = false }
+hdrshot-egui-backend = "0.2.0"
+rfd = { version = "0.18.0", default-features = false }
+serde_json = "1"
+softbuffer = "0.4.8"
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_Graphics_Dwm",
+    "Win32_Graphics_Gdi",
+    "Win32_Security",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Threading",
+    "Win32_UI_Accessibility",
+    "Win32_UI_Input",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_UI_Shell",
+    "Win32_UI_WindowsAndMessaging",
+] }
+winit = { version = "0.30.13", default-features = false, features = ["rwh_06"] }
+winreg = "0.56.0"
+zstd = "0.14.4"
+
+[build-dependencies]
+embed-resource = "3"
+
+# Small, self-contained exe: no unwinding tables, one codegen unit, link-time optimisation, symbols stripped.
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
