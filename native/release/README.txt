@@ -1,4 +1,4 @@
-Green Hat Kid Keyboard & Mouse Plus 2.1.6
+Green Hat Kid Keyboard & Mouse Plus 2.1.7
 =========================================
 
 Keyboard and mouse for the Green Hat Kid game on Lichii, with a 1:1 mouse camera that also works while
