@@ -4,8 +4,8 @@
 1 24 "app.manifest"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 2,1,7,0
-PRODUCTVERSION 2,1,7,0
+FILEVERSION 2,1,8,0
+PRODUCTVERSION 2,1,8,0
 FILEFLAGSMASK 0x3fL
 FILEFLAGS 0x0L
 FILEOS VOS_NT_WINDOWS32
@@ -18,12 +18,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Green Hat Kid"
             VALUE "FileDescription", "Green Hat Kid Keyboard & Mouse Plus"
-            VALUE "FileVersion", "2.1.7.0"
+            VALUE "FileVersion", "2.1.8.0"
             VALUE "InternalName", "GreenHatKid-KBM-Plus"
             VALUE "LegalCopyright", "Copyright (c) 2026 DWLKS. MIT License. Based on lichii-keyboard-mouse by exgde/joaobyss (MIT)."
             VALUE "OriginalFilename", "GreenHatKid-KBM-Plus.exe"
             VALUE "ProductName", "Green Hat Kid Keyboard & Mouse Plus"
-            VALUE "ProductVersion", "2.1.7.0"
+            VALUE "ProductVersion", "2.1.8.0"
         END
     END
     BLOCK "VarFileInfo"

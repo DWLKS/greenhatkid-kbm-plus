@@ -25,8 +25,8 @@ OUT = os.path.join(REPO, 'native', 'res', 'basic-controls.bin.zst')
 
 # ---- placement inside the 1160x680 picture; must match KB_SC / KB_ORG / MS_SC / MS_ORG in native/src/guides.rs ----
 PW, PH = 1160, 680
-KB_SC, KB_ORG = 1.10, (157, 245)          # keyboard picture point (17, 22) lands here, scaled
-MS_SC, MS_ORG = 0.95, (824, 249)          # top-left of the mouse body (MS_BBOX) lands here, scaled
+KB_SC, KB_ORG = 1.22, (127, 216)           # keyboard picture point (17, 22) lands here, scaled
+MS_SC, MS_ORG = 1.08, (831, 131)          # top-left of the mouse body (MS_BBOX) lands here, scaled
 MS_BBOX = (36, 81, 223, 390)
 
 

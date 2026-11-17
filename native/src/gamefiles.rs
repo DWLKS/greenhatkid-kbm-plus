@@ -1,6 +1,7 @@
 //! The game files the in-game key icons need, read from the player's own .nup (nothing from the game ships with the
-//! app): the zstd dictionaries, the icon font, the letter font and the UI texture archive. Kept, still
-//! compressed, in a small cache so the .nup is needed once (about 65 MB, mostly the texture archive).
+//! app): the zstd dictionaries, the icon font, the letter font, the UI texture archive and the UI layout archive
+//! (the Basic Controls screen's labels). Kept, still compressed, in a small cache so the .nup is needed once (about
+//! 65 MB, mostly the texture archive).
 
 use crate::store::state_dir;
 use std::collections::HashMap;
@@ -10,11 +11,12 @@ use std::path::{Path, PathBuf};
 
 /// (name in the cache, folder in the game, end of the file name): exactly one file name may match. The letter
 /// font is found by the end of its name only (no other font name ends that way).
-const WANT: [(&str, &str, &str); 4] = [
+const WANT: [(&str, &str, &str); 5] = [
     ("ZsDic.pack.zs", "romfs/Pack", "/ZsDic.pack.zs"),
     ("External.bfotf.zs", "romfs/Font2/Scalable", "/External.Nin_Ounce_NVN2.bfotf.zs"),
     ("Letters.bfotf.zs", "romfs/Font2/Scalable", "Glyphs-v3-Plain.Nin_Ounce_NVN2.bfotf.zs"),
     ("Common.bntx.zs", "romfs/UI/Layout2Archive", "/Common.Product.100.Nin_Ounce_NVN2.bntx.zs"),
+    ("Common.blarc.zs", "romfs/UI/Layout2Archive", "/Common.Product.100.Nin_Ounce_NVN2.blarc.zs"),
 ];
 
 pub fn cache_dir() -> PathBuf {

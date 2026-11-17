@@ -127,6 +127,40 @@ pub fn write_bc4(b: &mut [u8], t: &Tex, img: &[u8]) {
     }
 }
 
+/// Reads a BC4 texture's first level as a one-channel picture (texture size, row by row).
+pub fn read_bc4(b: &[u8], t: &Tex) -> Vec<u8> {
+    let (wb, hb) = (t.w.div_ceil(4), t.h.div_ceil(4));
+    let bh = mip_block_height(hb, 1 << t.bh_log2);
+    let mut img = vec![0u8; t.w * t.h];
+    for by in 0..hb {
+        for bx in 0..wb {
+            let o = t.off + offset_bc4(bx, by, wb, bh);
+            let Some(blk) = b.get(o..o + 8) else { continue };
+            let (r0, r1) = (blk[0] as i32, blk[1] as i32);
+            let mut pal = [r0, r1, 0, 0, 0, 0, 0, 255];
+            if r0 > r1 {
+                for i in 1..7 {
+                    pal[1 + i] = ((7 - i as i32) * r0 + i as i32 * r1) / 7;
+                }
+            } else {
+                for i in 1..5 {
+                    pal[1 + i] = ((5 - i as i32) * r0 + i as i32 * r1) / 5;
+                }
+            }
+            let mut bits = [0u8; 8];
+            bits[..6].copy_from_slice(&blk[2..8]);
+            let bits = u64::from_le_bytes(bits);
+            for i in 0..16 {
+                let (x, y) = (bx * 4 + i % 4, by * 4 + i / 4);
+                if x < t.w && y < t.h {
+                    img[y * t.w + x] = pal[((bits >> (3 * i)) & 7) as usize] as u8;
+                }
+            }
+        }
+    }
+    img
+}
+
 pub struct Astc {
     ctx: ctt_astcenc::Context,
 }

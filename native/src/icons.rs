@@ -15,6 +15,8 @@ use std::path::Path;
 pub const MOD: &str = "ButtonPrompts-KeyboardMouse";
 const FONT_REL: &str = "romfs/Font2/Scalable/External.Nin_Ounce_NVN2.bfotf.zs";
 const BNTX_REL: &str = "romfs/UI/Layout2Archive/Common.Product.100.Nin_Ounce_NVN2.bntx.zs";
+/// The UI layout archive: the Basic Controls labels placed for the keys (layout.rs).
+const BLARC_REL: &str = "romfs/UI/Layout2Archive/Common.Product.100.Nin_Ounce_NVN2.blarc.zs";
 const MAX_OTF: usize = 14560; // the original font's size: the container must keep its size
 const CY: f64 = 301.0;
 /// glyphs the game never draws (no message uses them): emptied only if the font would not fit otherwise
@@ -511,14 +513,42 @@ fn draw_textures(b: &mut [u8], z: &Letters, keys: &BTreeMap<String, String>) -> 
         guides.push(tex.get(&format!("ControllerGuide_Pro_0{n}")).ok_or("Basic Controls guide texture not found")?);
     }
     let sizes = [0, 1, 2, 3, 4].map(|n| (guides[n].w, guides[n].h));
-    for (t, img) in guides.iter().zip(crate::guides::draw(keys, sizes)) {
+    let mut sheets = crate::guides::draw(keys, sizes);
+    let d = Drawer { z };
+    let key = |n: &str| keys.get(n).map(|s| s.as_str()).unwrap_or("none").to_string();
+    // "Reset Camera" has no label part, so its key icon goes on a line sheet, where a label shows its icon
+    if let Some((n, cx, cy)) = crate::guides::reset_icon(keys) {
+        let cs = d.glyph(1000.0, &key("button_r3"));
+        if let Some((x0, y0, x1, y1)) = bbox(&cs) {
+            const SIZE: usize = 160;
+            let k = crate::guides::ICON_SCALE;
+            let m = ink(&cs, 1.0, SIZE, SIZE as f64 / 2.0, SIZE as f64 / 2.0, (x1 - x0) * k, (y1 - y0) * k);
+            let (w, h) = sizes[n];
+            let (ox, oy) = ((cx - SIZE as f64 / 2.0).round() as isize, (cy - SIZE as f64 / 2.0).round() as isize);
+            for (i, v) in m.iter().enumerate() {
+                let (x, y) = (ox + (i % SIZE) as isize, oy + (i / SIZE) as isize);
+                if x >= 0 && y >= 0 && (x as usize) < w && (y as usize) < h {
+                    let p = &mut sheets[n][y as usize * w + x as usize];
+                    *p = (*p).max((v * 255.0 + 0.5).clamp(0.0, 255.0) as u8);
+                }
+            }
+        }
+    }
+    for (t, img) in guides.iter().zip(sheets) {
         if t.fmt >> 8 != 0x1d {
             return Err("unexpected Basic Controls guide texture".into());
         }
         textures::write_bc4(b, t, &img);
     }
-    let d = Drawer { z };
-    let key = |n: &str| keys.get(n).map(|s| s.as_str()).unwrap_or("none").to_string();
+    // the label bands: the game's one-band picture repeated, two, three and four times at the rows' spacing
+    let band = |n: usize| tex.get(crate::layout::BAND_TEXTURES[n]).filter(|t| t.fmt >> 8 == 0x1d).ok_or("Basic Controls band texture not found");
+    let one = band(0)?;
+    let one_px = textures::read_bc4(b, one);
+    let pitch = crate::guides::place(keys).first().map_or(100.0, |p| p.pitch);
+    for n in 1..crate::layout::BAND_TEXTURES.len() {
+        let t = band(n)?;
+        textures::write_bc4(b, t, &crate::layout::band_picture(&one_px, one.w, one.h, t.w, t.h, n + 1, pitch));
+    }
     let syms: HashMap<char, String> = [('A', "button_a"), ('B', "button_b"), ('X', "button_x"), ('Y', "button_y"), ('L', "button_l"),
                                        ('R', "button_r")].iter().map(|&(c, n)| (c, key(n))).collect();
     for k in ['A', 'B', 'X', 'Y'] {
@@ -601,12 +631,12 @@ pub fn guess_nup(root: &str) -> Option<String> {
 }
 
 /// Raised whenever the drawings change, so Apply draws them again after an update.
-pub const DRAWING_VERSION: u64 = 4;
+pub const DRAWING_VERSION: u64 = 6;
 
-/// True when both files of the key icon mod are in Lichii's load folder.
+/// True when all files of the key icon mod are in Lichii's load folder.
 pub fn installed(root: &str) -> bool {
     let m = Path::new(root).join("load").join(TITLE_ID).join(MOD);
-    m.join(FONT_REL).is_file() && m.join(BNTX_REL).is_file()
+    [FONT_REL, BNTX_REL, BLARC_REL].iter().all(|f| m.join(f).is_file())
 }
 
 /// Draws the in-game key icons for `keys` into Lichii's mod folder. The first time it needs the game's .nup.
@@ -639,6 +669,11 @@ pub fn build(root: &str, nup: &str, keys: &BTreeMap<String, String>, log: &mut d
     }
     draw_textures(&mut b, &z, keys)?;
 
+    log("Placing the Basic Controls labels...".into());
+    let blarc = crate::layout::build(&gamefiles::zs_decompress_cached("Common.blarc.zs", dict)?, keys)?;
+    let blarc_bytes = gamefiles::zs_compress(&blarc, dict, 16)?;
+    drop(blarc);
+
     let load = Path::new(root).join("load").join(TITLE_ID);
     std::fs::create_dir_all(&load).map_err(|e| e.to_string())?;
     // only one button-icon mod can be active
@@ -659,17 +694,20 @@ pub fn build(root: &str, nup: &str, keys: &BTreeMap<String, String>, log: &mut d
             log(format!("Moved {d} to mod-backups (only one button-icon mod can be active)."));
         }
     }
-    let (font_path, bntx_path) = (load.join(MOD).join(FONT_REL), load.join(MOD).join(BNTX_REL));
-    for p in [&font_path, &bntx_path] {
+    let m = load.join(MOD);
+    let (font_path, bntx_path, blarc_path) = (m.join(FONT_REL), m.join(BNTX_REL), m.join(BLARC_REL));
+    for p in [&font_path, &bntx_path, &blarc_path] {
         std::fs::create_dir_all(p.parent().unwrap()).map_err(|e| e.to_string())?;
     }
-    let (font_tmp, bntx_tmp) = (font_path.with_extension("zs.tmp"), bntx_path.with_extension("zs.tmp"));
+    let tmp = |p: &Path| p.with_extension("zs.tmp");
     log("Packing the textures...".into());
-    std::fs::write(&font_tmp, &font_bytes).map_err(|e| e.to_string())?;
-    gamefiles::zs_compress_to_file(&b, dict, 9, &bntx_tmp)?;
+    std::fs::write(tmp(&font_path), &font_bytes).map_err(|e| e.to_string())?;
+    std::fs::write(tmp(&blarc_path), &blarc_bytes).map_err(|e| e.to_string())?;
+    gamefiles::zs_compress_to_file(&b, dict, 9, &tmp(&bntx_path))?;
     drop(b);
-    std::fs::rename(&font_tmp, &font_path).map_err(|e| e.to_string())?;
-    std::fs::rename(&bntx_tmp, &bntx_path).map_err(|e| e.to_string())?;
+    for p in [&font_path, &blarc_path, &bntx_path] {
+        std::fs::rename(tmp(p), p).map_err(|e| e.to_string())?;
+    }
     log("In-game key icons installed.".into());
     Ok(())
 }

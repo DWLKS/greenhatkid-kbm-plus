@@ -6,7 +6,7 @@ Keyboard and mouse controls for the Green Hat Kid game on the Lichii emulator, w
 
 - **Your keys:** every button can be a keyboard key or a mouse button, plus a slow-walk key with an adjustable speed.
 - **Mouse camera:** the mouse turns the camera directly, like a PC game. There's no stick curve and no top speed, and it keeps working while aiming and riding horses.
-- **In-game key icons:** the game shows your keys instead of gamepad buttons in its texts, on the HUD, on the ocarina song sheet and on the Basic Controls screen. They are made from your own game file on your PC; nothing from the game ships with the app.
+- **In-game key icons:** the game shows your keys instead of gamepad buttons in its texts, on the HUD, on the ocarina song sheet and on the Basic Controls screen, which is laid out again for your keys. They are made from your own game file on your PC; nothing from the game ships with the app.
 - **Mouse panning:** the app turns on Lichii's mouse panning when the game starts, so the pointer stays hidden while you play.
 - **Remove the mod:** one button puts Lichii back exactly as it was before.
 - **Light on resources:** a 5 MB exe that runs from the tray. The background part uses under 2 MB of memory and only watches the mouse while the game is in front.
@@ -72,7 +72,7 @@ The first script writes `native/LICENSES.txt`; the second writes `out/GreenHatKi
 
 | Folder | What it holds |
 | --- | --- |
-| `native/src` | The app: settings window (`ui.rs`), background agent and tray (`agent.rs`), mouse capture (`capture.rs`), mouse panning (`panning.rs`), Lichii settings (`lichii.rs`), in-game key icons (`icons.rs`, `guides.rs`, `font.rs`, `textures.rs`) |
+| `native/src` | The app: settings window (`ui.rs`), background agent and tray (`agent.rs`), mouse capture (`capture.rs`), mouse panning (`panning.rs`), Lichii settings (`lichii.rs`), in-game key icons (`icons.rs`, `font.rs`, `textures.rs`), Basic Controls screen (`guides.rs`, `layout.rs`) |
 | `native/res` | Icon, manifest, version info and the Basic Controls pictures |
 | `native/release` | The release README and zip script |
 | `patch` | The camera patch's source and the built patch |
@@ -87,7 +87,8 @@ Parts of this software are based on lichii-keyboard-mouse by exgde/joaobyss (MIT
 - **Tray:** closing the window keeps the app running in the tray, and it can start with Windows.
 - **Reworked mouse capture:** it only watches the mouse while the game is in front and handles every mouse report at once. It follows Lichii's aspect ratio, notices when the game stops, and puts Windows' pointer settings back even after a crash.
 - **The mouse camera while aiming and riding horses.**
-- **In-game key icons made inside the app** from your own game file, with the Basic Controls guide lines drawn for your keys.
+- **In-game key icons made inside the app** from your own game file.
+- **A Basic Controls screen laid out for your keys:** a bigger keyboard and mouse, labels placed so their lines cross as little as possible, each label on its own background, and Reset Camera as a label of its own.
 - **Automatic mouse panning.**
 - **Remove the mod**, which puts Lichii back as it was.
 

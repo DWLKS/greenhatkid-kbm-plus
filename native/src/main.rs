@@ -16,6 +16,7 @@ mod gamefiles;
 mod guides;
 mod icons;
 mod keys;
+mod layout;
 mod lichii;
 mod outline;
 mod panning;
@@ -80,6 +81,13 @@ fn main() {
                 }
                 let mut file = format!("P5\n# {ms} ms\n{w} {h}\n255\n").into_bytes();
                 file.extend(px);
+                // where the labels went: one line each (name, side, screen y, second line)
+                let labels: String = guides::place(&keys)
+                    .iter()
+                    .map(|p| format!("{} {} {} {}
+", p.what, if p.left { "L" } else { "R" }, p.y, p.second))
+                    .collect();
+                let _ = std::fs::write(format!("{out}.labels.txt"), labels);
                 if std::fs::write(out, file).is_ok() { 0 } else { 1 }
             }
             None => 2,
